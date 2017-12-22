@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Server restart</title>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Restart Linux Servers</h1>
+  <button id="restart" type="button">Restart</button>
+  <script>
+    var socket = io.connect('http://localhost:8888');
+
+    $(document).ready(function() {
+      $("#restart").click(function(pw) {
+        console.log('clicked');
+        socket.emit('restart');
+      })
+    })
+  </script> 
+</body>
+</html>
