@@ -11,8 +11,6 @@ Steps to setup passwordless ssh access for root user on ubuntu (only need to fol
 
 Steps for Linux: https://stackoverflow.com/questions/15351491/passwordless-ssh-to-remote-system-as-root
 
-REALLY insecure but works according to specs
-
 Tested with a VirtualBox Ubuntu 32-bit server
 
-DISCLAIMER: Not really knowledgable on Linux so this is a very bad solution
+DISCLAIMER: This is a very bad solution
