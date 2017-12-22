@@ -1,9 +1,9 @@
-#Remote Linux Server Restart
-Run npm install
-Add ip to remote servers in the format user@ip in server.js in ips array. user must have root privileges
-Add rsa file location to keyless_location that corresponds to the ip in ips
-Run npm start
-Navigate to localhost:8888 in browser and click the Restart button
+# Remote Linux Server Restart
+1. Run npm install
+2. Add ip to remote servers in the format user@ip in server.js in ips array. user must have root privileges
+3. Add rsa file location to keyless_location that corresponds to the ip in ips
+4. Run npm start
+5. Navigate to localhost:8888 in browser and click the Restart button
 
 NOTE: Requires passwordless ssh setup to remote servers to work, otherwise password must be entered in console. User must have root permissions as well
 
