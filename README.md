@@ -17,7 +17,7 @@ Tested with a VirtualBox Ubuntu 32-bit server
 For v2:
 
 On the server that wants to be able to be shutdown/restarted:
-1. Enable passwordless sudo shutdown and sudo reboot
+1. Enable passwordless sudo shutdown and sudo reboot (Steps: https://askubuntu.com/questions/168879/shutdown-from-terminal-without-entering-password)
 2. Run npm install in v2/back
 3. Run npm start in v2/back
 
