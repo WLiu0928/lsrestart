@@ -15,6 +15,7 @@ Steps for Linux: https://stackoverflow.com/questions/15351491/passwordless-ssh-t
 Tested with a VirtualBox Ubuntu 32-bit server
 
 For v2:
+
 On the server that wants to be able to be shutdown/restarted:
 1. Enable passwordless sudo shutdown and sudo reboot
 2. Run npm install in v2/back
