@@ -1,4 +1,5 @@
 # Remote Linux Server Restart
+For v1:
 1. Run npm install
 2. Add ip to remote servers in the format user@ip in server.js in ips array. user must have root privileges
 3. Add rsa file location to keyless_location that corresponds to the ip in ips
@@ -13,4 +14,12 @@ Steps for Linux: https://stackoverflow.com/questions/15351491/passwordless-ssh-t
 
 Tested with a VirtualBox Ubuntu 32-bit server
 
-DISCLAIMER: This is a very bad solution
+For v2:
+On the server that wants to be able to be shutdown/restarted:
+1. Enable passwordless sudo shutdown and sudo reboot
+2. Run npm install in v2/back
+3. Run npm start in v2/back
+
+On the local machine:
+1. Run npm install in v2/front
+2. Run npm start in v2/front
