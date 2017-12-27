@@ -1,4 +1,4 @@
-Run on server that will be restarted remotely
+Run on server that will be restarted/shutdown remotely
 
 Prerequisites:
 1. Run npm install in this folder
