@@ -1,48 +1,88 @@
 import React, { Component } from 'react';
-import ReactModal from 'react-modal';
 import './App.css';
 
 var axios = require('axios');
-
-ReactModal.setAppElement('#root');
+const ipRegex = require('./ipregex');
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ips: [{
-        ip: "localhost",
-        port: "8080"
-      }],
+      ips: [], // {ip: <ip>, port: <port>}
       modalIsOpen: false,
-      newip: "192.168.0.100",
+      newip: "192.168.0.1",
       newport: "8080"
     }
   }
-  checkServer() {
-    axios.get('http://localhost:8080/')
+  componentDidMount() {
+    if (!localStorage.getItem('ips')) return;
+    this.setState({ips: JSON.parse(localStorage.getItem('ips'))})
+  }
+  checkServer(index) {
+    axios.get(this.state.ips[index].ip + this.state.ips[index].port)
     .then(function(response) {
-      console.log(response);
+      alert(response.data);
     })
     .catch(function(error) {
-      console.log('error: ' + error);
+      alert('Offline');
     });
   }
-  callRestart() {
-    axios.get('http://localhost:8080/restart');
+  callRestart(index) {
+    axios.get(this.state.ips[index].ip + this.state.ips[index].port + '/restart')
+    .then(function(response) {
+      alert(response.data);
+    })
+    .catch(function(error) {
+      alert('Offline');
+    });
+  }
+  callShutdown(index) {
+    axios.get(this.state.ips[index].ip + this.state.ips[index].port + '/shutdown')
+    .then(function(response) {
+      alert(response.data);
+    })
+    .catch(function(error) {
+      alert('Offline');
+    });
+  }
+  restartAll() {
+    let numServers = this.state.ips.length;
+    for (let i = 0; i < numServers; i++) {
+      this.callRestart(i);
+    }
+  }
+  shutdownAll() {
+    let numServers = this.state.ips.length;
+    for (let i = 0; i < numServers; i++) {
+      this.callShutdown(i);
+    }
+  }
+  validateIP(ip) {
+    return ipRegex({exact: true}).test(ip);
   }
   addServer = () => {
     let newip = this.state.newip;
+    if (this.validateIP(newip) === false) {
+      alert('Please enter a valid IP');
+      return;
+    }
     let newport = this.state.newport;
     let ips = this.state.ips;
     for (var ip of ips) {
-      if (newip === ip) {
+      if (newip === ip.ip) {
         alert('IP is already added');
         return;
       }
     }
     ips.push({ip: newip, port: newport});
     this.setState({ips: ips});
+    localStorage.setItem('ips', JSON.stringify(this.state.ips));
+  }
+  removeServer(index) {
+    let tempState = this.state.ips;
+    tempState.splice(index, 1);
+    this.setState({ips: tempState});
+    localStorage.setItem('ips', JSON.stringify(this.state.ips));
   }
   modalVisible = () => {
     this.setState({modalIsOpen: true});
@@ -51,15 +91,16 @@ class App extends Component {
 		this.setState({[name]: event.target.value});
   }
   displayServers() {
-    console.log('displaying servers');
     return this.state.ips.map((info, index) => {
       return(
         <tr key={index + 1}>
           <td>{index + 1}</td>
           <td>{info.ip}</td>
           <td>{info.port}</td>
-          <td><button className="btn btn-primary" onClick={this.checkServer}>Check server</button></td>
-          <td><button className="btn btn-primary" onClick={this.callRestart}>Restart</button></td>
+          <td><button className="btn btn-primary" onClick={() => {this.checkServer(index)}}>Check</button></td>
+          <td><button className="btn btn-primary" onClick={() => {this.callRestart(index)}}>Restart</button></td>
+          <td><button className="btn btn-primary" onClick={() => {this.callShutdown(index)}}>Shutdown</button></td>
+          <td><button className="btn btn-primary" onClick={() => {this.removeServer(index)}}>Remove</button></td>
         </tr>
       );
     });
@@ -78,9 +119,11 @@ class App extends Component {
               </div>
               <div className="modal-body">
                 <form>
-                  <input type="text" onChange={this.handleChange('newip')} placeholder="192.168.0.1"></input>
+                  <div className="d-flex">
+                  <input className="modal-input" type="text" onChange={this.handleChange('newip')} placeholder={this.state.newip}></input>
                   :
-                  <input type="text" onChange={this.handleChange('newport')} placeholder="8080"></input>
+                  <input className="modal-input" type="text" onChange={this.handleChange('newport')} placeholder={this.state.newport}></input>
+                  </div>
                 </form>
               </div>
               <div className="modal-footer">
@@ -92,15 +135,17 @@ class App extends Component {
         </div>
         <div className="content">
           <div className="row">
-            <div className="col">
-              Remotely restart your linux servers!
+            <div className="col text-center">
+              <h1>Remotely restart your linux servers!</h1>
             </div>
           </div>
-          <div className="row">
-            <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#newServerModal">Add Server</button>
+          <div className="row justify-content-center">
+            <button type="button" className="btn btn-primary h-button" data-toggle="modal" data-target="#newServerModal">Add Server</button>
+            <button type="button" className="btn btn-primary h-button" onClick={this.restartAll}>Restart All</button>
+            <button type="button" className="btn btn-primary h-button" onClick={this.shutdownAll}>Shutdown All</button>
           </div>
-          <div className="row">
-            <table className="table">
+          <div className="row text-center justify-content-center">
+            <table className="table table-bordered table-dark">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -108,6 +153,8 @@ class App extends Component {
                 <th scope="col">Port</th>
                 <th scope="col">Status</th>
                 <th scope="col">Restart</th>
+                <th scope="col">Shutdown</th>
+                <th scope="col">Remove</th>
               </tr>
             </thead>
             <tbody>
